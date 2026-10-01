@@ -1,0 +1,7 @@
+python3 -m venv .venv
+source .venv/bin/activate ou .venv\Scripts\activate
+pip install -r requirements.txt
+
+# Obfuscated-MalMem2022.csv precisa estar nesta pasta
+
+python tudo.py
