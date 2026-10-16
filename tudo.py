@@ -175,7 +175,9 @@ def straces(cargas, rep, saida, completo, retreinar):
                 subprocess.run(["strace", "-f", "-c", "-o", f"{base}.txt"] + cmd,
                                check=True, stdout=subprocess.DEVNULL)
                 if completo:
-                    subprocess.run(["strace", "-f", "-tt", "-T", "-o", f"{base}.log"] + cmd,
+                    os.makedirs(completo, exist_ok=True)
+                    subprocess.run(["strace", "-f", "-tt", "-T", "-y", "-s", "128", "--decode-pids=comm",
+                                    "-o", f"{completo}/{modelo}_{n}_r{r}.txt"] + cmd,
                                    check=True, stdout=subprocess.DEVNULL)
                 linhas.append(dict(modelo=modelo, carga=n, rep=r, **resumir(f"{base}.txt")))
     df = pd.DataFrame(linhas)
@@ -193,7 +195,7 @@ def main():
     ap.add_argument("--cargas", type=int, nargs="+", default=[0, 1, 100, 1000])
     ap.add_argument("--rep", type=int, default=3)
     ap.add_argument("--saida", default="straces")
-    ap.add_argument("--completo", action="store_true", help="salva também o trace completo (-f -tt -T)")
+    ap.add_argument("--completo", default="straces_completos", help="pasta dos traces completos .txt ('' = não gerar)")
     ap.add_argument("--retreinar", action="store_true")
     a = ap.parse_args()
 
